@@ -146,7 +146,7 @@
     }
 
     .blank-space {
-      height: 100vh; /* Increased to ensure trigger-text-2 is reachable */
+      height: 100vh;
     }
 
     .toc-sidebar {
@@ -369,10 +369,7 @@
   <div class="cjk-achievement-content">
     <div class="cjk-title"><span class="cjk-serial"></span><span class="cjk-title-text"></span></div>
     <div class="cjk-desc"></div>
-    <div class="cjk-footer">
-      解锁时间：2022年7月15日 上午12:29<br>
-      <span>8.7% 的玩家拥有此成就</span>
-    </div>
+    <div class="cjk-footer"></div>
   </div>
 </div>
 
@@ -407,14 +404,16 @@
       serial: 1,
       title: "天地精华",
       desc: "你刚刚阅读到“天地精华”，解锁了隐藏成就。",
+      footer: '解锁时间：2022年7月15日 上午12:29<br><span>8.7% 的玩家拥有此成就</span>'
     },
     "trigger-text-2": {
       serial: 2,
       title: "金光乍现",
       desc: "你刚刚阅读到“两道金光”，解锁了隐藏成就。",
+      footer: '解锁时间：2022年7月15日 上午12:30<br><span>7.5% 的玩家拥有此成就</span>'
     },
     // Add more achievements here, e.g.:
-    // "trigger-text-3": { serial: 3, title: "新成就名称", desc: "描述..." },
+    // "trigger-text-3": { serial: 3, title: "新成就名称", desc: "描述...", footer: "解锁时间：... <br><span>...</span>" },
   };
 
   // Track triggered achievements and manage popup
@@ -440,10 +439,12 @@
     const serialElement = popup.querySelector(".cjk-serial");
     const titleElement = popup.querySelector(".cjk-title-text");
     const descElement = popup.querySelector(".cjk-desc");
+    const footerElement = popup.querySelector(".cjk-footer");
 
     serialElement.textContent = `成就 #${achievements[triggerId].serial}`;
     titleElement.textContent = achievements[triggerId].title;
     descElement.textContent = achievements[triggerId].desc;
+    footerElement.innerHTML = achievements[triggerId].footer;
 
     // Show popup
     popup.classList.add("show");
