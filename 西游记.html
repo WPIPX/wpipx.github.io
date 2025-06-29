@@ -20,7 +20,7 @@
       color: #333;
     }
 
-    body.day-theme #trigger-text {
+    body.day-theme [id^="trigger-text"] {
       color: #ffd700;
       background-color: rgba(255, 215, 0, 0.3);
       padding: 2px 4px;
@@ -33,7 +33,7 @@
       color: #e0e0e0;
     }
 
-    body.night-theme #trigger-text {
+    body.night-theme [id^="trigger-text"] {
       color: #ffd700;
       background-color: rgba(255, 215, 0, 0.1);
       padding: 2px 4px;
@@ -123,6 +123,13 @@
       margin-bottom: 6px;
     }
 
+    .cjk-serial {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffd700;
+      margin-right: 8px;
+    }
+
     .cjk-desc {
       font-size: 15px;
       color: #ccc;
@@ -139,7 +146,7 @@
     }
 
     .blank-space {
-      height: 66.67vh;
+      height: 100vh; /* Increased to ensure trigger-text-2 is reachable */
     }
 
     .toc-sidebar {
@@ -295,6 +302,10 @@
         margin-right: 12px;
       }
 
+      .cjk-serial {
+        font-size: 14px;
+      }
+
       .toc-sidebar {
         width: 200px;
         left: -100vw;
@@ -342,10 +353,10 @@
   <p>势镇汪洋，威宁瑶海。势镇汪洋，潮涌银山鱼入穴；威宁瑶海，波翻雪浪蜃（shèn）离渊。木火方隅高积上，东海之处耸崇巅。丹崖怪石，削壁奇峰。丹崖上，彩凤双鸣；削壁前，麒麟独卧。峰头时听锦鸡鸣，石窟每观龙出入。林中有寿鹿仙狐，树上有灵禽玄鹤。瑶草奇花不谢，青松翠柏长春。仙桃常结果，修竹每留云。一条涧壑藤萝密，四面原堤草色新。正是百川会处擎天柱，万劫无移大地根。</p>
 
   <h3 id="section-7">第七章</h3>
-  <p>那座山，正当顶上，有一块仙石。其石有三丈六尺五寸高，有二丈四尺围圆。三丈六尺五寸高，按周天三百六十五度；二丈四尺围圆，按政历二十四气。上有九窍八孔，按九宫八卦。四面更无树木遮阴，左右倒有芝兰相衬。盖自开辟以来，每受 <span id="trigger-text">天地精华</span>，日精月华，感之既久，遂有灵通之意。内育仙胞，一日迸裂，产一石卵，似圆球样大。因见风，化作一个石猴，五官俱备，四肢皆全。</p>
+  <p>那座山，正当顶上，有一块仙石。其石有三丈六尺五寸高，有二丈四尺围圆。三丈六尺五寸高，按周天三百六十五度；二丈四尺围圆，按政历二十四气。上有九窍八孔，按九宫八卦。四面更无树木遮阴，左右倒有芝兰相衬。盖自开辟以来，每受 <span id="trigger-text-1">天地精华</span>，日精月华，感之既久，遂有灵通之意。内育仙胞，一日迸裂，产一石卵，似圆球样大。因见风，化作一个石猴，五官俱备，四肢皆全。</p>
 
   <h3 id="section-8">第八章</h3>
-  <p>便就学爬学走，拜了四方。目运两道金光，射冲斗府。惊动高天上圣大慈仁者玉皇大天尊玄穹高上帝，驾座金阙云宫灵霄宝殿，聚集仙卿，见有金光焰焰，即命千里眼、顺风耳开南天门观看。二将果奉旨出门外，看的真，听的明。须臾回报道：“臣奉旨观听金光之处，乃东胜神洲海东傲来小国之界，有一座花果山，山上有一仙石，石产一卵，见风化一石猴，在那里拜四方，眼运金光，射冲斗府。如今服饵水食，金光将潜息矣。”玉帝垂赐恩慈曰：“下方之物，乃天地精华所生，不足为异。”</p>
+  <p>便就学爬学走，拜了四方。目运<span id="trigger-text-2">两道金光</span>，射冲斗府。惊动高天上圣大慈仁者玉皇大天尊玄穹高上帝，驾座金阙云宫灵霄宝殿，聚集仙卿，见有金光焰焰，即命千里眼、顺风耳开南天门观看。二将果奉旨出门外，看的真，听的明。须臾回报道：“臣奉旨观听金光之处，乃东胜神洲海东傲来小国之界，有一座花果山，山上有一仙石，石产一卵，见风化一石猴，在那里拜四方，眼运金光，射冲斗府。如今服饵水食，金光将潜息矣。”玉帝垂赐恩慈曰：“下方之物，乃天地精华所生，不足为异。”</p>
 
   <!-- Placeholder for additional sections of a 400,000-character novel -->
   <!-- To optimize, implement lazy loading here using IntersectionObserver -->
@@ -356,8 +367,8 @@
 <div class="cjk-achievement-popup" id="cjk-achievement">
   <div class="cjk-achievement-icon"></div>
   <div class="cjk-achievement-content">
-    <div class="cjk-title">天地精华</div>
-    <div class="cjk-desc">你刚刚阅读到“天地精华”，解锁了隐藏成就。</div>
+    <div class="cjk-title"><span class="cjk-serial"></span><span class="cjk-title-text"></span></div>
+    <div class="cjk-desc"></div>
     <div class="cjk-footer">
       解锁时间：2022年7月15日 上午12:29<br>
       <span>8.7% 的玩家拥有此成就</span>
@@ -390,27 +401,79 @@
 </div>
 
 <script>
-  let triggered = false;
+  // Achievement configuration
+  const achievements = {
+    "trigger-text-1": {
+      serial: 1,
+      title: "天地精华",
+      desc: "你刚刚阅读到“天地精华”，解锁了隐藏成就。",
+    },
+    "trigger-text-2": {
+      serial: 2,
+      title: "金光乍现",
+      desc: "你刚刚阅读到“两道金光”，解锁了隐藏成就。",
+    },
+    // Add more achievements here, e.g.:
+    // "trigger-text-3": { serial: 3, title: "新成就名称", desc: "描述..." },
+  };
 
-  // 成就弹窗逻辑
-  window.addEventListener("scroll", () => {
-    if (triggered) return;
+  // Track triggered achievements and manage popup
+  const triggeredAchievements = new Set();
+  let popupTimeout = null;
+  const achievementQueue = [];
 
-    const triggerText = document.getElementById("trigger-text");
-    const rect = triggerText.getBoundingClientRect();
-    const triggerLine = window.innerHeight / 3;
+  // Function to show the next achievement
+  function showNextAchievement() {
+    if (achievementQueue.length === 0) return;
 
-    if (rect.top <= triggerLine) {
-      triggered = true;
-
-      const popup = document.getElementById("cjk-achievement");
-      popup.classList.add("show");
-
-      setTimeout(() => {
-        popup.classList.remove("show");
-        popup.classList.add("hide");
-      }, 4000);
+    const popup = document.getElementById("cjk-achievement");
+    // Clear any existing timeout
+    if (popupTimeout) {
+      clearTimeout(popupTimeout);
+      popupTimeout = null;
     }
+    // Reset popup classes
+    popup.classList.remove("show", "hide");
+
+    // Get the next achievement
+    const { triggerId } = achievementQueue.shift();
+    const serialElement = popup.querySelector(".cjk-serial");
+    const titleElement = popup.querySelector(".cjk-title-text");
+    const descElement = popup.querySelector(".cjk-desc");
+
+    serialElement.textContent = `成就 #${achievements[triggerId].serial}`;
+    titleElement.textContent = achievements[triggerId].title;
+    descElement.textContent = achievements[triggerId].desc;
+
+    // Show popup
+    popup.classList.add("show");
+
+    // Set timeout to hide popup
+    popupTimeout = setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hide");
+      // Show next achievement after hide animation (600ms)
+      setTimeout(showNextAchievement, 600);
+    }, 4000);
+  }
+
+  // Achievement popup logic
+  window.addEventListener("scroll", () => {
+    Object.keys(achievements).forEach(triggerId => {
+      if (triggeredAchievements.has(triggerId)) return;
+
+      const triggerText = document.getElementById(triggerId);
+      if (!triggerText) return;
+
+      const rect = triggerText.getBoundingClientRect();
+      const triggerLine = window.innerHeight / 3;
+
+      if (rect.top <= triggerLine) {
+        triggeredAchievements.add(triggerId);
+        achievementQueue.push({ triggerId });
+        showNextAchievement();
+      }
+    });
   });
 
   // 目录侧栏逻辑
