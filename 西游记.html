@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小说阅读器成就弹窗</title>
+  <style>
+    body {
+      font-family: "仿宋", "宋体", SimSun, serif;
+      font-size: 20px;
+      line-height: 1.8;
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.day-theme {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    body.day-theme #trigger-text {
+      color: #ffd700;
+      background-color: rgba(255, 215, 0, 0.3);
+      padding: 2px 4px;
+      border-radius: 3px;
+      box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    body.night-theme {
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    body.night-theme #trigger-text {
+      color: #ffd700;
+      background-color: rgba(255, 215, 0, 0.1);
+      padding: 2px 4px;
+      border-radius: 3px;
+      box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+
+    h3 {
+      font-family: "仿宋", "宋体", SimSun, serif;
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    body.night-theme h3 {
+      color: #e0e0e0;
+    }
+
+    .cjk-achievement-popup {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(to right, #333, #111);
+      border: 1px solid #555;
+      padding: 12px 16px;
+      border-radius: 6px;
+      width: 90%;
+      max-width: 480px;
+      position: fixed;
+      right: -100%;
+      bottom: 40px;
+      opacity: 0;
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.3);
+      transition: right 0.6s ease, opacity 0.6s ease;
+      z-index: 9999;
+      will-change: transform, opacity;
+    }
+
+    .cjk-achievement-popup.show {
+      right: 5%;
+      opacity: 1;
+    }
+
+    .cjk-achievement-popup.hide {
+      right: -100%;
+      opacity: 0;
+    }
+
+    .cjk-achievement-icon {
+      width: 64px;
+      height: 64px;
+      background: url('https://i.imgur.com/zqfhqox.png') no-repeat center center;
+      background-size: cover;
+      border: 2px solid gold;
+      border-radius: 6px;
+      margin-right: 16px;
+      box-shadow:
+        0 0 10px rgba(255, 215, 0, 0.5),
+        0 0 20px rgba(255, 215, 0, 0.3),
+        0 0 30px rgba(255, 215, 0, 0.2);
+      animation: glow 2s infinite alternate;
+      flex-shrink: 0;
+    }
+
+    @keyframes glow {
+      0% {
+        box-shadow:
+          0 0 10px rgba(255, 215, 0, 0.4),
+          0 0 20px rgba(255, 215, 0, 0.2),
+          0 0 30px rgba(255, 215, 0, 0.1);
+      }
+      100% {
+        box-shadow:
+          0 0 20px rgba(255, 215, 0, 0.7),
+          0 0 30px rgba(255, 215, 0, 0.5),
+          0 0 50px rgba(255, 215, 0, 0.3);
+      }
+    }
+
+    .cjk-achievement-content {
+      flex: 1;
+    }
+
+    .cjk-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 6px;
+    }
+
+    .cjk-desc {
+      font-size: 15px;
+      color: #ccc;
+    }
+
+    .cjk-footer {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .cjk-footer span {
+      color: #ffd700;
+    }
+
+    .blank-space {
+      height: 66.67vh;
+    }
+
+    .toc-sidebar {
+      position: fixed;
+      top: 0;
+      left: -100vw;
+      width: 250px;
+      height: 100%;
+      background-color: #fff;
+      border-right: 1px solid #ccc;
+      padding: 60px 20px 20px 20px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 9997;
+      transition: left 0.3s ease;
+      will-change: transform;
+    }
+
+    body.day-theme .toc-sidebar {
+      background-color: #fff;
+      color: #333;
+    }
+
+    body.night-theme .toc-sidebar {
+      background-color: #2a2a2a;
+      color: #e0e0e0;
+      border-right: 1px solid #555;
+    }
+
+    .toc-sidebar.show {
+      left: 0;
+    }
+
+    .toc-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background-color: #333;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9997;
+    }
+
+    .toc-toggle span {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .toc-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    body.night-theme .toc-buttons {
+      border-bottom: 2px solid #555;
+    }
+
+    .toc-button {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      color: #333;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    body.night-theme .toc-button {
+      background-color: #3a3a3a;
+      color: #e0e0e0;
+      border-color: #555;
+    }
+
+    .toc-button:hover {
+      background-color: #ddd;
+    }
+
+    body.night-theme .toc-button:hover {
+      background-color: #4a4a4a;
+    }
+
+    .toc-button:active {
+      background-color: #ccc;
+    }
+
+    body.night-theme .toc-button:active {
+      background-color: #555;
+    }
+
+    .font-size-button {
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .theme-button {
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .toc-item {
+      padding: 10px 0;
+      cursor: pointer;
+      font-size: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    body.night-theme .toc-item {
+      border-bottom: 1px solid #555;
+    }
+
+    .toc-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    body.night-theme .toc-item:hover {
+      background-color: #3a3a3a;
+    }
+
+    .toc-item a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .cjk-achievement-popup {
+        padding: 10px 12px;
+        bottom: 20px;
+      }
+
+      .cjk-achievement-icon {
+        width: 48px;
+        height: 48px;
+        margin-right: 12px;
+      }
+
+      .toc-sidebar {
+        width: 200px;
+        left: -100vw;
+        padding: 50px 20px 20px 20px;
+      }
+
+      .toc-toggle {
+        top: 15px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
+      }
+
+      .toc-button {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
+      .toc-item {
+        font-size: 14px;
+        padding: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body class="day-theme">
+
+<div id="content">
+  <h3 id="section-1">第一章</h3>
+  <p>诗曰：</p>
+
+  <h3 id="section-2">第二章</h3>
+  <p>盖闻天地之数，有十二万九千六百岁为一元。将一元分为十二会，乃子、丑、寅、卯、辰、巳（sì）、午、未、申、酉、戌、亥之十二支也。每会该一万八百岁。且就一日而论：子时得阳气，而丑则鸡鸣；寅不通光，而卯则日出；辰时食后，而巳则挨排；日午天中，而未则西蹉；申时晡而日落酉；戌黄昏而人定亥。譬于大数，若到戌会之终，则天地昏蒙而万物否矣。再去五千四百岁，交亥会之初，则当黑暗，而两间人物俱无矣，故曰混沌。</p>
+
+  <h3 id="section-3">第三章</h3>
+  <p>又五千四百岁，亥会将终，贞下起元，近子之会，而复逐渐开明。邵康节曰：“冬至子之半，天心无改移。一阳初动处，万物未生时。”到此，天始有根。再五千四百岁，正当子会，轻清上腾，有日，有月，有星，有辰。日、月、星、辰，谓之四象。故曰，天开于子。又经五千四百岁，子会将终，近丑之会，而逐渐坚实。易曰：“大哉乾元！至哉坤元！万物资生，乃顺承天。”至此，地始凝结。</p>
+
+  <h3 id="section-4">第四章</h3>
+  <p>再五千四百岁，正当丑会，重浊下凝，有水，有火，有山，有石，有土。水、火、山、石、土谓之五形。故曰，地辟于丑。又经五千四百岁，丑会终而寅会之初，发生万物。历曰：“天气下降，地气上升；天地交合，群物皆生。”至此，天清地爽，阴阳交合。再五千四百岁，正当寅会，生人，生兽，生禽，正谓天地人，三才定位。故曰，人生于寅。</p>
+
+  <h3 id="section-5">第五章</h3>
+  <p>感盘古开辟，三皇治世，五帝定伦，世界之间，遂分为四大部洲：曰东胜神洲，曰西牛贺洲，曰南赡部洲，曰北俱芦洲。这部书单表东胜神洲。海外有一国土，名曰傲来国。国近大海，海中有一座山，唤为花果山。此山乃十洲之祖脉，三岛之来龙，自开清浊而立，鸿蒙判后而成。真个好山！有词赋为证：</p>
+
+  <h3 id="section-6">第六章</h3>
+  <p>势镇汪洋，威宁瑶海。势镇汪洋，潮涌银山鱼入穴；威宁瑶海，波翻雪浪蜃（shèn）离渊。木火方隅高积上，东海之处耸崇巅。丹崖怪石，削壁奇峰。丹崖上，彩凤双鸣；削壁前，麒麟独卧。峰头时听锦鸡鸣，石窟每观龙出入。林中有寿鹿仙狐，树上有灵禽玄鹤。瑶草奇花不谢，青松翠柏长春。仙桃常结果，修竹每留云。一条涧壑藤萝密，四面原堤草色新。正是百川会处擎天柱，万劫无移大地根。</p>
+
+  <h3 id="section-7">第七章</h3>
+  <p>那座山，正当顶上，有一块仙石。其石有三丈六尺五寸高，有二丈四尺围圆。三丈六尺五寸高，按周天三百六十五度；二丈四尺围圆，按政历二十四气。上有九窍八孔，按九宫八卦。四面更无树木遮阴，左右倒有芝兰相衬。盖自开辟以来，每受 <span id="trigger-text">天地精华</span>，日精月华，感之既久，遂有灵通之意。内育仙胞，一日迸裂，产一石卵，似圆球样大。因见风，化作一个石猴，五官俱备，四肢皆全。</p>
+
+  <h3 id="section-8">第八章</h3>
+  <p>便就学爬学走，拜了四方。目运两道金光，射冲斗府。惊动高天上圣大慈仁者玉皇大天尊玄穹高上帝，驾座金阙云宫灵霄宝殿，聚集仙卿，见有金光焰焰，即命千里眼、顺风耳开南天门观看。二将果奉旨出门外，看的真，听的明。须臾回报道：“臣奉旨观听金光之处，乃东胜神洲海东傲来小国之界，有一座花果山，山上有一仙石，石产一卵，见风化一石猴，在那里拜四方，眼运金光，射冲斗府。如今服饵水食，金光将潜息矣。”玉帝垂赐恩慈曰：“下方之物，乃天地精华所生，不足为异。”</p>
+
+  <!-- Placeholder for additional sections of a 400,000-character novel -->
+  <!-- To optimize, implement lazy loading here using IntersectionObserver -->
+  <div class="blank-space"></div>
+</div>
+
+<!-- 成就弹窗 -->
+<div class="cjk-achievement-popup" id="cjk-achievement">
+  <div class="cjk-achievement-icon"></div>
+  <div class="cjk-achievement-content">
+    <div class="cjk-title">天地精华</div>
+    <div class="cjk-desc">你刚刚阅读到“天地精华”，解锁了隐藏成就。</div>
+    <div class="cjk-footer">
+      解锁时间：2022年7月15日 上午12:29<br>
+      <span>8.7% 的玩家拥有此成就</span>
+    </div>
+  </div>
+</div>
+
+<!-- 目录侧栏 -->
+<div class="toc-sidebar" id="toc-sidebar">
+  <div class="toc-buttons">
+    <button class="toc-button font-size-button" onclick="setFontSize('small')">小</button>
+    <button class="toc-button font-size-button" onclick="setFontSize('medium')">中</button>
+    <button class="toc-button font-size-button" onclick="setFontSize('large')">大</button>
+    <button class="toc-button theme-button" onclick="setTheme('day')">日间</button>
+    <button class="toc-button theme-button" onclick="setTheme('night')">夜间</button>
+  </div>
+  <div class="toc-item"><a href="#section-1">第一章</a></div>
+  <div class="toc-item"><a href="#section-2">第二章</a></div>
+  <div class="toc-item"><a href="#section-3">第三章</a></div>
+  <div class="toc-item"><a href="#section-4">第四章</a></div>
+  <div class="toc-item"><a href="#section-5">第五章</a></div>
+  <div class="toc-item"><a href="#section-6">第六章</a></div>
+  <div class="toc-item"><a href="#section-7">第七章</a></div>
+  <div class="toc-item"><a href="#section-8">第八章</a></div>
+</div>
+
+<!-- 目录切换按钮 -->
+<div class="toc-toggle" id="toc-toggle">
+  <span>≡</span>
+</div>
+
+<script>
+  let triggered = false;
+
+  // 成就弹窗逻辑
+  window.addEventListener("scroll", () => {
+    if (triggered) return;
+
+    const triggerText = document.getElementById("trigger-text");
+    const rect = triggerText.getBoundingClientRect();
+    const triggerLine = window.innerHeight / 3;
+
+    if (rect.top <= triggerLine) {
+      triggered = true;
+
+      const popup = document.getElementById("cjk-achievement");
+      popup.classList.add("show");
+
+      setTimeout(() => {
+        popup.classList.remove("show");
+        popup.classList.add("hide");
+      }, 4000);
+    }
+  });
+
+  // 目录侧栏逻辑
+  const tocToggle = document.getElementById("toc-toggle");
+  const tocSidebar = document.getElementById("toc-sidebar");
+
+  tocToggle.addEventListener("click", () => {
+    tocSidebar.classList.toggle("show");
+    tocToggle.classList.toggle("active");
+  });
+
+  // 字体大小切换
+  function setFontSize(size) {
+    const body = document.body;
+    if (size === "small") {
+      body.style.fontSize = "16px";
+    } else if (size === "medium") {
+      body.style.fontSize = "20px";
+    } else if (size === "large") {
+      body.style.fontSize = "24px";
+    }
+    tocSidebar.classList.remove("show");
+    tocToggle.classList.remove("active");
+  }
+
+  // 主题切换
+  function setTheme(theme) {
+    const body = document.body;
+    body.classList.remove("day-theme", "night-theme");
+    body.classList.add(theme + "-theme");
+    tocSidebar.classList.remove("show");
+    tocToggle.classList.remove("active");
+  }
+
+  // 平滑滚动到目录项
+  document.querySelectorAll(".toc-item a").forEach(item => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetId = item.getAttribute("href");
+      const targetElement = document.querySelector(targetId);
+      targetElement.scrollIntoView({ behavior: "smooth" });
+      tocSidebar.classList.remove("show");
+      tocToggle.classList.remove("active");
+    });
+  });
+
+  // Placeholder for lazy loading implementation
+  /*
+  function lazyLoadContent() {
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Load additional content (e.g., via fetch or DOM insertion)
+          // Example: document.getElementById("content").appendChild(newSection);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "100px" });
+    // Observe a sentinel element at the bottom of the content
+    const sentinel = document.createElement("div");
+    document.getElementById("content").appendChild(sentinel);
+    observer.observe(sentinel);
+  }
+  // Call lazyLoadContent() on page load
+  */
+</script>
+
+</body>
+</html>
